@@ -129,7 +129,7 @@ const Index = () => {
           </TodoCard>
         </Grid>
         <Grid item xs={12} md={6}>
-          <TodoCard title="Realizados">
+          <TodoCard title="Realizadas">
           {loading && <LoadingSpinner />}
             {doneTodos.map((todo, index) => {
               let data = new Date(todo.dt_todo);
