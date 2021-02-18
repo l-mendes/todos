@@ -7,8 +7,17 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { Checkbox, Divider, FormControlLabel } from '@material-ui/core';
+import LoadingButton from '../LoadingButton';
 
-export default function TodoForm({open, handleFormSubmit, handleCloseModal, name, setName, description, setDescription, dtTodo, handleDateChange}) {
+export default function TodoForm({
+  open, handleFormSubmit, handleCloseModal,
+  name, setName, 
+  description, setDescription, 
+  dtTodo, handleDateChange,
+  done, setDone,
+  disableSubmit
+}) {
   const [errors, setErrors] = useState({
     name: '',
     description: '',
@@ -45,6 +54,7 @@ export default function TodoForm({open, handleFormSubmit, handleCloseModal, name
     <div>
       <Dialog open={open} onClose={handleCloseModal} aria-labelledby="form-modal-add-todo">
         <DialogTitle id="form-modal-add-todo">Nova Tarefa</DialogTitle>
+        <Divider />
         <DialogContent>
           <TextField
             autoFocus
@@ -88,15 +98,37 @@ export default function TodoForm({open, handleFormSubmit, handleCloseModal, name
             }}
           />
         </MuiPickersUtilsProvider>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={done}
+              value={done}
+              onChange={() => { setDone(!done) }}
+              name="done"
+            />
+          }
+          style={{marginTop: '10px'}}
+          label="Tarefa realizada?"
+        />
         {errors.dtTodo}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} color="secondary">
+          <Button 
+            onClick={handleCloseModal} 
+            color="secondary"
+            variant="outlined"
+          >
             Cancelar
           </Button>
-          <Button onClick={validateFormSubmit} color="primary">
+          <LoadingButton
+            onClick={validateFormSubmit}
+            color="primary"
+            disabled={disableSubmit}
+            loading={disableSubmit}
+            variant="outlined"
+          >
             Salvar
-          </Button>
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </div>

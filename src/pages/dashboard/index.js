@@ -1,5 +1,5 @@
-import { Box, Button, Grid, makeStyles, TextField, Typography } from '@material-ui/core';
 import { useEffect, useState } from 'react';
+import { Box, Button, Grid, makeStyles, TextField, Typography } from '@material-ui/core';
 import { requirePageAuth } from '../../utils/middleware/auth/requirePageAuth';
 import TodoCard from '../../components/TodoCard';
 import TodoForm from '../../components/TodoForm';
@@ -38,6 +38,8 @@ const Index = () => {
     description: '',
     dtTodo: '',
   });
+  const [done, setDone] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const handleDateChange = (date) => {
     setDtTodo(date);
@@ -51,11 +53,13 @@ const Index = () => {
     setName('');
     setDescription('');
     setDtTodo(new Date());
+    setDone(false);
 
     setOpenAddModal(false);
   };
 
   const handleFormAddSubmit = async () => {
+    setDisableSubmit(true);
     try {
       const newTodo = await axios({
         method: "POST",
@@ -64,11 +68,12 @@ const Index = () => {
           name,
           description,
           dt_todo: dtTodo,
+          done,
         }
       });
 
       if(newTodo.data.success) {
-        setPendingTodos([...pendingTodos, newTodo.data.data]);
+        setTodos([...todos, newTodo.data.data]);
         alert('Tarefa criada com sucesso!');
       }
 
@@ -76,19 +81,20 @@ const Index = () => {
       console.error(err);
       alert('Não foi possível criar a tarefa!');
     }
-    setOpenAddModal(false);
+    handleCloseAddModal();
+    setDisableSubmit(false);
   };
 
   const handleDoneTodos = () => {
     return todos.filter((todo) => {
       return todo.done === true;
-    });
+    }).sort((a, b) => new Date(a.dt_todo) - new Date(b.dt_todo));
   };
 
   const handlePendingTodos = () => {
     return todos.filter((todo) => {
       return todo.done === false;
-    });
+    }).sort((a, b) => new Date(a.dt_todo) - new Date(b.dt_todo));
   }
 
   useEffect(async () => {
@@ -154,6 +160,9 @@ const Index = () => {
         setDescription={setDescription}
         dtTodo={dtTodo}
         handleDateChange={handleDateChange}
+        done={done}
+        setDone={setDone}
+        disableSubmit={disableSubmit}
       />
     </div>
   );

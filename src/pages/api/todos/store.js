@@ -17,7 +17,7 @@ const handler = withSession(async (req, res) => {
       reject(false);
     }
 
-    const { name, description, dt_todo } = req.body;
+    const { name, description, dt_todo, done } = req.body;
 
     const { db } = await connectToDatabase();
 
@@ -25,7 +25,7 @@ const handler = withSession(async (req, res) => {
       name,
       description,
       dt_todo,
-      "done": false,
+      done,
       "user_id": ObjectId(user._id),
       "created_at": new Date(),
       "updated_at": new Date()
