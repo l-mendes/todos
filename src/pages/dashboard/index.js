@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, Grid, makeStyles, TextField, Typography } from '@material-ui/core';
 import { requirePageAuth } from '../../utils/middleware/auth/requirePageAuth';
+import { useToasts } from 'react-toast-notifications';
 import TodoCard from '../../components/TodoCard';
 import TodoForm from '../../components/TodoForm';
 import Layout from '../../components/Layout';
@@ -40,6 +41,7 @@ const Index = () => {
   });
   const [done, setDone] = useState(false);
   const [disableSubmit, setDisableSubmit] = useState(false);
+  const { addToast } = useToasts();
 
   const handleDateChange = (date) => {
     setDtTodo(date);
@@ -74,12 +76,12 @@ const Index = () => {
 
       if(newTodo.data.success) {
         setTodos([...todos, newTodo.data.data]);
-        alert('Tarefa criada com sucesso!');
+        addToast("Tarefa criada com sucesso!", {appearance: "success"});
       }
 
     } catch(err) {
       console.error(err);
-      alert('Não foi possível criar a tarefa!');
+      addToast("Não foi possível criar a tarefa!", {appearance: "error"});
     }
     handleCloseAddModal();
     setDisableSubmit(false);
