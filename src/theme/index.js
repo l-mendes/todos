@@ -6,8 +6,8 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       light: colors.purple[300],
-      main: colors.purple[600],
-      dark: colors.purple[800],
+      main: colors.purple[800],
+      dark: colors.purple[900],
     },
     error: {
       main: colors.red.A400,
