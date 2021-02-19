@@ -34,19 +34,19 @@ export default function MyApp(props) {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
-      <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        <Layout>
-          <ToastProvider 
-            autoDismiss={true} 
-            autoDismissTimeout="3000"
-            components={{ ToastContainer }}
-          >
-            <Component {...pageProps} />
-          </ToastProvider>
-        </Layout>
-      </ThemeProvider>
+      <ToastProvider 
+        autoDismiss={true} 
+        autoDismissTimeout="3000"
+        components={{ ToastContainer }}
+      >
+        <ThemeProvider theme={theme}>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+            <CssBaseline />
+            <Layout>
+                <Component {...pageProps} />
+            </Layout>
+          </ThemeProvider>
+      </ToastProvider>
     </>
   );
 }
