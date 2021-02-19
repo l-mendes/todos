@@ -1,5 +1,5 @@
 import Button from '@material-ui/core/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -16,39 +16,10 @@ export default function TodoForm({
   description, setDescription, 
   dtTodo, handleDateChange,
   done, setDone,
-  disableSubmit
+  disableSubmit,
+  errors,
+  handleInputChange
 }) {
-  const [errors, setErrors] = useState({
-    name: '',
-    description: '',
-    dtTodo: '',
-  });
-
-  const handleInputChange = (input, value) => {
-    if(value) {
-      setErrors({...errors, [input]: ''});
-    }
-    if(dtTodo && errors.dtTodo) {
-      setErrors({...errors, [dtTodo]: ''});
-    }
-  };
-
-  const validateFormSubmit = (e) => {
-    if(!name) {
-      setErrors({...errors, name: 'O campo Nome é obrigatório!'});
-      return;
-    }
-    if(!description) {
-      setErrors({...errors, description: 'O campo Descrição é obrigatório!'});
-      return;
-    }
-    if(!dtTodo) {
-      setErrors({...errors, dtTodo: 'O campo Data da tarefa é obrigatório!'});
-      return;
-    }
-
-    handleFormSubmit();
-  };
 
   return (
     <div>
@@ -63,10 +34,11 @@ export default function TodoForm({
             label="Nome"
             type="text"
             value={name}
+            error={errors.name.length === 0 ? false : true }
+            helperText={errors.name}
             onChange={(e) => { handleInputChange('name', e.currentTarget.value); setName(e.currentTarget.value)}}
             fullWidth
           />
-          {errors.name}
 
           <TextField
             margin="dense"
@@ -74,13 +46,14 @@ export default function TodoForm({
             label="Descrição"
             type="text"
             value={description}
+            error={errors.description.length === 0 ? false : true }
+            helperText={errors.description}
             onChange={(e) => { handleInputChange('description', e.currentTarget.value); setDescription(e.currentTarget.value)}}
             multiline={true}
             rows={3}
             rowsMax={6}
             fullWidth
           />
-          {errors.description}
 
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
@@ -92,7 +65,9 @@ export default function TodoForm({
             id="date-picker-inline"
             label="Data da tarefa"
             value={dtTodo}
-            onChange={handleDateChange}
+            onChange={(e) => {handleInputChange('dtTodo', e); handleDateChange(e);}}
+            error={errors.dtTodo.length === 0 ? false : true }
+            helperText={errors.dtTodo}
             KeyboardButtonProps={{
               'aria-label': 'change date',
             }}
@@ -110,7 +85,6 @@ export default function TodoForm({
           style={{marginTop: '10px'}}
           label="Tarefa realizada?"
         />
-        {errors.dtTodo}
         </DialogContent>
         <DialogActions>
           <Button 
@@ -121,7 +95,7 @@ export default function TodoForm({
             Cancelar
           </Button>
           <LoadingButton
-            onClick={validateFormSubmit}
+            onClick={handleFormSubmit}
             color="primary"
             disabled={disableSubmit}
             loading={disableSubmit}

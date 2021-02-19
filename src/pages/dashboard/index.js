@@ -56,11 +56,58 @@ const Index = () => {
     setDescription('');
     setDtTodo(new Date());
     setDone(false);
+    setFormErrors({
+      name: '',
+      description: '',
+      dtTodo: '',
+    });
 
     setOpenAddModal(false);
   };
 
+  const handleInputChange = (input, value) => {
+    if (input === 'dtTodo') {
+      if (checkIsDate(value)) {
+        setFormErrors({...formErrors, [input]: ''});
+      }
+    } else {
+      if (value) {
+        setFormErrors({...formErrors, [input]: ''});
+      }
+    }
+  };
+
+  const checkIsDate = (date) => {
+    if (!date) {
+      return false;
+    }
+    return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
+  }
+
+  const handleFormValidate = () => {
+    if(!name) {
+      setFormErrors({...formErrors, name: 'O campo Nome é obrigatório!'});
+      return false;
+    }
+    if(!description) {
+      setFormErrors({...formErrors, description: 'O campo Descrição é obrigatório!'});
+      return false;
+    }
+
+    if(!checkIsDate(dtTodo)) {
+      setFormErrors({...formErrors, dtTodo: 'O campo Data da tarefa é obrigatório!'});
+      return false;
+    }
+
+    return true;
+  }
+
   const handleFormAddSubmit = async () => {
+    const formValidate = handleFormValidate();
+    if(!formValidate) {
+      return;
+    }
+
     setDisableSubmit(true);
     try {
       const newTodo = await axios({
@@ -165,6 +212,8 @@ const Index = () => {
         done={done}
         setDone={setDone}
         disableSubmit={disableSubmit}
+        errors={formErrors}
+        handleInputChange={handleInputChange}
       />
     </div>
   );
